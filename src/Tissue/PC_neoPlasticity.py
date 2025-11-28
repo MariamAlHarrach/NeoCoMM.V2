@@ -217,7 +217,7 @@ spec = [
     ('taux_W',float64),
     ('W_str',float64),
     ('plasticity',int32), 
-    ('initial_Hybrid',float64),
+    ('initial_Brunel',float64),
     ('initial_noplasticity',float64),
 
 ]
