@@ -10,7 +10,7 @@ def get_Variable_Names():
              'E_leak','E_Na','E_K','E_Ca','E_h',
              'g_AMPA','E_AMPA','g_GABA','g_GABA_s','E_GABA','g_NMDA','E_NMDA',
              'Cm','Cm_d','p_SD' , 'p_SA','g_c_SA','g_c_SD','PERCENT','Noise','tau_GABA_s','tau_GABA_d','tau_Ex', 'I_NMDA_CA1','TauxCa',
-             'Cm','g_c','PERCENT', 'theta_d', 'theta_p','taux_W', 'beta_1', 'beta_2', 'A', 'Bb','omega0','Lamda', 'W_max','plasticity','initial_Hybrid','initial_noplasticity']
+             'Cm','g_c','PERCENT', 'theta_d', 'theta_p','taux_W', 'beta_1', 'beta_2', 'A', 'Bb','omega0','Lamda', 'W_max','plasticity','initial_Brunel','initial_noplasticity']
 
 spec = [
     ('Type' ,float64),
@@ -397,7 +397,7 @@ class pyrCellneo:
         self.taux_W = 7000              #2000 #time constant of synaptic efficacy (seconds to minutes) [Hybrid, Graupner 2012]
         self.W_str= 0.5 # the boundary of the two stable states (depression/potentiation) [Hybrid, Graupner 2012]
         self.plasticity = plasticity # if =1 use Hybrid w, if =0 use shouval
-        self.initial_Hybrid = 0.5
+        self.initial_Brunel = 0.5
         self.initial_noplasticity = 0.5
         self.setParameters()
         self.updateParameters()
@@ -1045,7 +1045,7 @@ class pyrCellneo:
         if self.plasticity==0:
             self.y[29] = self.initial_noplasticity
         elif self.plasticity==1:
-            self.y[29] = self.initial_Hybrid
+            self.y[29] = self.initial_Brunel
 
 
 
@@ -1188,8 +1188,7 @@ class pyrCellneo:
         if self.plasticity==0:
             self.dW_dt = 0   #1
         elif self.plasticity==1:
-           #self.dW_dt = 1/self.taux_W*(-self.W_*(1-self.W_)*(self.W_str-self.W_) + ((1-self.W_)*self.A * self.Hevi_p(self.Ca_d_*1e3) - (self.W_*self.Bb * self.Hevi_d(self.Ca_d_*1e3)) + self.omega0 ))            # Hybrid with Heaviside
-            self.dW_dt = 1/self.taux_W*(-self.W_*(1-self.W_)*(self.W_str-self.W_) + ((1-self.W_)* self.omega_p(self.Ca_d_*1e3) - (self.W_* self.omega_d(self.Ca_d_*1e3))))              # Hybrid/Shouval(New Hybrid) I removed the omega0
+            self.dW_dt = 1/self.taux_W*(-self.W_*(1-self.W_)*(self.W_str-self.W_) + ((1-self.W_)*self.A * self.Hevi_p(self.Ca_d_*1e3) - (self.W_*self.Bb * self.Hevi_d(self.Ca_d_*1e3)) + self.omega0 ))            # Brunel
         ###################################################################################################################  
         if not self.tau_m_CaT == 0:
             self.dm_CaT_d_dt = ((self.m_CaT_inf_d - self.m_CaT_d_) / (self.tau_m_CaT))
